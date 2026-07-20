@@ -277,7 +277,6 @@ python -m app.main --config "$CONFIG_PATH" consume
 app/docker/
 ├── Dockerfile
 ├── docker-compose.yml
-├── env.example
 ├── nginx.conf.example
 └── README.md
 ```

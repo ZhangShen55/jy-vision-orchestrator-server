@@ -87,7 +87,7 @@ Expected: `3 passed`.
 **Files:**
 - Modify: `app/docker/Dockerfile`
 - Modify: `app/docker/docker-compose.yml`
-- Modify: `app/docker/env.example`
+- Delete: `app/docker/env.example`
 - Modify: `.gitignore`
 
 - [x] **Step 1: Standardize the image layout**

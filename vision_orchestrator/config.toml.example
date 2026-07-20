@@ -1,0 +1,88 @@
+[Vision_Orchestrator]
+# Kafka 任务消费配置。课堂视觉链路固定消费 classroom_cv_task。
+KafkaBootstrapServers = "127.0.0.1:9092"
+KafkaTopic = "classroom_cv_task"
+KafkaGroupId = "cv-analysis-service"
+# 默认兼容旧行为从 earliest 开始；全量联调使用新 group 时建议临时设为 latest，避免消费历史消息。
+KafkaAutoOffsetReset = "earliest"
+KafkaMaxPollIntervalMs = 7200000
+KafkaMaxPollRecords = 1
+
+# vision_orchestrator HTTP 服务配置，用于接收 TIAS 注册、心跳和注销。
+HttpHost = "0.0.0.0"
+HttpPort = 9000
+
+# Redis 作为多 vision_orchestrator 实例共享的 TIAS 注册表。
+RedisUrl = "redis://127.0.0.1:6379/0"
+RedisKeyPrefix = "vision_orchestrator:tias"
+TiasHeartbeatTimeoutSeconds = 15
+
+# vision_orchestrator API 健康检查是否探测 Redis。生产建议 true，本地无 Redis 时可 false。
+HealthCheckRedis = false
+
+# Worker 控制面配置。控制接口只修改 Redis 期望状态，不启动或杀死本地进程。
+WorkerControlEnabled = true
+WorkerControlKey = "change-me"
+WorkerControlHeaderName = "X-VISION-ORCHESTRATOR-KEY"
+WorkerControlStateKey = "vision_orchestrator:worker_control:state"
+
+# Worker 注册表和受控消费配置。
+WorkerRegistryKeyPrefix = "vision_orchestrator"
+# 为空时启动进程自动生成；生产多 Worker 可显式配置唯一 ID。
+WorkerId = ""
+WorkerControlledByRedis = true
+WorkerDefaultDesiredState = "PAUSED"
+WorkerHeartbeatIntervalSeconds = 5
+WorkerHeartbeatTimeoutSeconds = 30
+WorkerPollWhenPausedSeconds = 5
+# STOPPED 状态默认只停止消费循环并保持进程可控；由部署系统负责杀进程。
+WorkerStopExits = false
+
+# 远程 TIAS 调度配置。
+TiasInferenceMode = "remote"
+TiasBatchSize = 8
+TiasRequestTimeoutSeconds = 60
+TiasMaxRetryPerBatch = 3
+TiasBusyRetryDelaySeconds = 5
+TiasCircuitBreakerFailureThreshold = 3
+TiasCircuitBreakerCooldownSeconds = 30
+
+# 注册表为空时的本地兜底实例。生产优先使用 Redis 注册表。
+TiasFallbackInstances = []
+
+# 数据库配置。lesson_ai_job 由上游负责，vision_orchestrator 不写该表。
+DBHost = "127.0.0.1"
+DBPort = 3306
+DBUser = "root"
+DBPassword = ""
+DBName = "ai_quality"
+
+# 抓拍存储配置。image_url 入库保存相对路径。Docker 内请配置为 /mnt。
+SnapshotMountRoot = "/mnt"
+SnapshotRelativePrefix = "cv"
+SnapshotScale = 0.25
+SnapshotMaxTotal = 30
+SnapshotHeadUpTopK = 3
+SnapshotHeadUpMinRate = 0.70
+SnapshotReadTopK = 3
+SnapshotReadMinRate = 0.30
+SnapshotSleepMinCount = 2
+SnapshotSleepMinRate = 0.05
+SnapshotPhoneMinCount = 2
+SnapshotPhoneMinRate = 0.05
+SnapshotTeacherAlertConsecutiveFrames = 3
+SnapshotSameTypeMinIntervalSeconds = 90
+
+# 学生异常行为统计配置。
+BehaviorStatStartMinute = 3
+BehaviorStatPeakMaxSegments = 5
+
+# Worker 运行配置。
+TempRoot = "/tmp/vision-orchestrator"
+# 本地视频相对路径基准目录。为空时按 vision_orchestrator 进程当前工作目录解析。
+LocalVideoBaseRoot = ""
+FrameIntervalSeconds = 30
+MaxTaskRetries = 3
+WorkerConcurrency = 1
+DefaultStudentCount = 50
+MaxFramesPerVideo = 0

@@ -1,0 +1,9 @@
+{
+  "task_id": "lesson-test",
+  "teacher_video_path": "https://example.com/teacher.mp4",
+  "student_video_path": "https://example.com/student.mp4",
+  "slides_video_path": "https://example.com/slides.mp4",
+  "evaluation_mode": 1,
+  "course_id": "course-test",
+  "student_count": 38
+}

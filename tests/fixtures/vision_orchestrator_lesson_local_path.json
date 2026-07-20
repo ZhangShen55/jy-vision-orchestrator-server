@@ -1,0 +1,9 @@
+{
+  "task_id": "lesson-test-local-path",
+  "teacher_video_path": "/data/course/示例课程/教师1.mp4",
+  "student_video_path": "/data/course/示例课程/学生1.mp4",
+  "slides_video_path": "/data/course/示例课程/PPT.mp4",
+  "evaluation_mode": 1,
+  "course_id": "cv-test",
+  "student_count": 38
+}

@@ -1,7 +1,7 @@
 import unittest
 
-from vision_orchestrator.domain.behavior_stats import build_student_behavior_stats
-from vision_orchestrator.domain.metrics import StudentFrameMetric
+from app.domain.behavior_stats import build_student_behavior_stats
+from app.domain.metrics import StudentFrameMetric
 
 
 class StudentBehaviorStatTest(unittest.TestCase):

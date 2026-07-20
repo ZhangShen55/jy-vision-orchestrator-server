@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from vision_orchestrator.app import load_message_from_json_arg, resolve_worker_id
+from app.main import load_message_from_json_arg, resolve_worker_id
 
 
 class VisionOrchestratorAppTest(unittest.TestCase):

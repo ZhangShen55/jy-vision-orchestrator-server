@@ -1,0 +1,42 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: vision-orchestrator-redis
+    ports:
+      - "6379:6379"
+
+  vision-orchestrator-api:
+    build:
+      context: ../..
+      dockerfile: app/docker/Dockerfile
+    container_name: vision-orchestrator-api
+    command: python -m app.main --config /app/config.toml serve
+    environment:
+      CONFIG_PATH: /app/config.toml
+    ports:
+      - "9000:9000"
+    volumes:
+      - ../config.toml:/app/config.toml:ro
+      - ../../mnt:/mnt
+    depends_on:
+      - redis
+
+  vision-orchestrator-worker:
+    build:
+      context: ../..
+      dockerfile: app/docker/Dockerfile
+    container_name: vision-orchestrator-worker
+    command: python -m app.main --config /app/config.toml worker
+    environment:
+      CONFIG_PATH: /app/config.toml
+      VISION_ORCHESTRATOR_WORKER_ID: worker-compose-1
+    volumes:
+      - ../config.toml:/app/config.toml:ro
+      - ../../mnt:/mnt
+    depends_on:
+      - redis
+      - vision-orchestrator-api
+
+networks:
+  default:
+    name: vision-orchestrator-net

@@ -14,7 +14,7 @@
 ## 目录结构
 
 ```text
-vision_orchestrator/       服务源码、配置示例和运行文档
+app/                      服务源码、配置示例和运行文档
   api/                     FastAPI 控制面
   application/             任务编排流程
   domain/                  指标、评分和快照策略
@@ -29,16 +29,16 @@ tests/                     单元测试与通用消息样例
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r vision_orchestrator/requirements.txt
-cp vision_orchestrator/config.toml.example vision_orchestrator/config.toml
+pip install -r app/requirements.txt
+cp app/config.toml.example app/config.toml
 ```
 
-按环境修改 `vision_orchestrator/config.toml` 后，分别启动 API 和 Worker：
+按环境修改 `app/config.toml` 后，分别启动 API 和 Worker：
 
 ```bash
-python -m vision_orchestrator.app --config vision_orchestrator/config.toml serve
+python -m app.main --config app/config.toml serve
 VISION_ORCHESTRATOR_WORKER_ID=worker-local-1 \
-python -m vision_orchestrator.app --config vision_orchestrator/config.toml worker
+python -m app.main --config app/config.toml worker
 ```
 
 默认 Worker 状态为 `PAUSED`。通过配置的控制请求头调用 `/api/worker-control/resume` 后开始消费。
@@ -49,7 +49,7 @@ python -m vision_orchestrator.app --config vision_orchestrator/config.toml worke
 python -m pytest -q
 ```
 
-完整配置说明和部署步骤见 [运行文档](vision_orchestrator/RUNNING.md) 与 [Docker 部署文档](vision_orchestrator/docker/README.md)。
+完整配置说明和部署步骤见 [运行文档](app/RUNNING.md) 与 [Docker 部署文档](app/docker/README.md)。
 
 ## 迁移兼容
 

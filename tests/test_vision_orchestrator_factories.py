@@ -1,9 +1,9 @@
 import unittest
 from unittest import mock
 
-from vision_orchestrator.application.factories import build_frame_analyzer
-from vision_orchestrator.config import VisionOrchestratorConfig
-from vision_orchestrator.infrastructure.vision.remote_frame_analyzer import RemoteFrameAnalyzer
+from app.application.factories import build_frame_analyzer
+from app.config import VisionOrchestratorConfig
+from app.infrastructure.vision.remote_frame_analyzer import RemoteFrameAnalyzer
 
 
 class VisionOrchestratorFactoriesTest(unittest.TestCase):
@@ -16,7 +16,7 @@ class VisionOrchestratorFactoriesTest(unittest.TestCase):
         self.assertIsInstance(analyzer, RemoteFrameAnalyzer)
 
     def test_remote_mode_does_not_import_local_tias_frame_analyzer(self):
-        with mock.patch.dict("sys.modules", {"vision_orchestrator.infrastructure.vision.frame_analyzer": None}):
+        with mock.patch.dict("sys.modules", {"app.infrastructure.vision.frame_analyzer": None}):
             analyzer = build_frame_analyzer(VisionOrchestratorConfig(
                 tias_inference_mode="remote",
                 tias_fallback_instances=("http://127.0.0.1:8981",),

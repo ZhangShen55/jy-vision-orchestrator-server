@@ -1,12 +1,12 @@
 import unittest
 from unittest import mock
 
-from vision_orchestrator.infrastructure.kafka.controlled_consumer import ControlledVisionOrchestratorKafkaConsumer
-from vision_orchestrator.infrastructure.worker_control import (
+from app.infrastructure.kafka.controlled_consumer import ControlledVisionOrchestratorKafkaConsumer
+from app.infrastructure.worker_control import (
     InMemoryWorkerControlStateRepository,
     WorkerDesiredState,
 )
-from vision_orchestrator.infrastructure.worker_registry import InMemoryWorkerRegistry, WorkerRuntimeState
+from app.infrastructure.worker_registry import InMemoryWorkerRegistry, WorkerRuntimeState
 
 
 class FakeKafkaConsumer:

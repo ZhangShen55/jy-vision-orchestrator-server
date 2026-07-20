@@ -1,7 +1,7 @@
 import unittest
 
-from vision_orchestrator.http_app import TiasInstanceApi, create_app
-from vision_orchestrator.infrastructure.tias.registry import InMemoryTiasRegistry
+from app.http_app import TiasInstanceApi, create_app
+from app.infrastructure.tias.registry import InMemoryTiasRegistry
 
 
 class VisionOrchestratorHttpApiTest(unittest.TestCase):

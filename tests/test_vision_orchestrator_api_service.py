@@ -3,14 +3,14 @@ import unittest
 
 from fastapi.testclient import TestClient
 
-from vision_orchestrator.api.app import create_api_app
-from vision_orchestrator.config import VisionOrchestratorConfig
-from vision_orchestrator.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
-from vision_orchestrator.infrastructure.worker_control import (
+from app.api.app import create_api_app
+from app.config import VisionOrchestratorConfig
+from app.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
+from app.infrastructure.worker_control import (
     InMemoryWorkerControlStateRepository,
     WorkerDesiredState,
 )
-from vision_orchestrator.infrastructure.worker_registry import (
+from app.infrastructure.worker_registry import (
     InMemoryWorkerRegistry,
     WorkerRuntimeState,
     WorkerStatus,

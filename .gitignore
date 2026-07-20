@@ -19,8 +19,8 @@ venv/
 # 本地配置和密钥
 .env
 *.env
-vision_orchestrator/config.toml
-vision_orchestrator/config_*.toml
+app/config.toml
+app/config_*.toml
 *.key
 *.pem
 *.crt

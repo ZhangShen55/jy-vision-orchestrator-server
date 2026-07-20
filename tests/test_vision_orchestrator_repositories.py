@@ -1,8 +1,8 @@
 import unittest
 
-from vision_orchestrator.domain.behavior_stats import StudentBehaviorStat
-from vision_orchestrator.domain.metrics import IndicatorMetric
-from vision_orchestrator.infrastructure.db.repositories import VisionOrchestratorRepository, IndicatorDefinition
+from app.domain.behavior_stats import StudentBehaviorStat
+from app.domain.metrics import IndicatorMetric
+from app.infrastructure.db.repositories import VisionOrchestratorRepository, IndicatorDefinition
 
 
 class FakeCursor:

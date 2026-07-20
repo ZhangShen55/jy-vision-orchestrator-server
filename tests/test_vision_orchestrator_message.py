@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from vision_orchestrator.infrastructure.kafka.message import InvalidTaskMessage, VisualTaskMessage
+from app.infrastructure.kafka.message import InvalidTaskMessage, VisualTaskMessage
 
 
 class VisualTaskMessageTest(unittest.TestCase):

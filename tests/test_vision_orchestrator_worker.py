@@ -5,12 +5,12 @@ from unittest import mock
 
 import numpy as np
 
-from vision_orchestrator.application.worker import VisualAnalysisWorker
-from vision_orchestrator.config import VisionOrchestratorConfig
-from vision_orchestrator.domain.metrics import IndicatorMetric, StudentFrameMetric, TeacherFrameMetric
-from vision_orchestrator.infrastructure.db.repositories import IndicatorDefinition
-from vision_orchestrator.infrastructure.kafka.message import VisualTaskMessage
-from vision_orchestrator.infrastructure.media.video import PreparedVideoSource
+from app.application.worker import VisualAnalysisWorker
+from app.config import VisionOrchestratorConfig
+from app.domain.metrics import IndicatorMetric, StudentFrameMetric, TeacherFrameMetric
+from app.infrastructure.db.repositories import IndicatorDefinition
+from app.infrastructure.kafka.message import VisualTaskMessage
+from app.infrastructure.media.video import PreparedVideoSource
 
 
 class FakeRepository:
@@ -119,8 +119,8 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
             })
 
             fake_frame = np.zeros((40, 80, 3), dtype=np.uint8)
-            with mock.patch("vision_orchestrator.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
-                    mock.patch("vision_orchestrator.application.worker.extract_frames") as extract:
+            with mock.patch("app.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
+                    mock.patch("app.application.worker.extract_frames") as extract:
                 extract.return_value = [
                     mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=15.0, frame_index=0), image=fake_frame)
                 ]
@@ -154,8 +154,8 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
             })
 
             fake_frame = np.zeros((40, 80, 3), dtype=np.uint8)
-            with mock.patch("vision_orchestrator.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
-                    mock.patch("vision_orchestrator.application.worker.extract_frames") as extract:
+            with mock.patch("app.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
+                    mock.patch("app.application.worker.extract_frames") as extract:
                 extract.return_value = [
                     mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=15.0, frame_index=0), image=fake_frame)
                 ]
@@ -188,8 +188,8 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
                 mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=15.0, frame_index=0), image=fake_frame),
                 mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=45.0, frame_index=1), image=fake_frame),
             ]
-            with mock.patch("vision_orchestrator.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
-                    mock.patch("vision_orchestrator.application.worker.extract_frames", return_value=frames):
+            with mock.patch("app.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
+                    mock.patch("app.application.worker.extract_frames", return_value=frames):
                 worker.process_task(message)
 
         self.assertEqual(frame_analyzer.student_batches, [("task-batch", 2)])
@@ -241,8 +241,8 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
                 mock.Mock(point=mock.Mock(minute_no=3, timestamp_seconds=195.0, frame_index=1), image=fake_frame),
                 mock.Mock(point=mock.Mock(minute_no=4, timestamp_seconds=255.0, frame_index=2), image=fake_frame),
             ]
-            with mock.patch("vision_orchestrator.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
-                    mock.patch("vision_orchestrator.application.worker.extract_frames", return_value=frames):
+            with mock.patch("app.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
+                    mock.patch("app.application.worker.extract_frames", return_value=frames):
                 worker.process_task(message)
 
         stat_call = next(call for call in repository.calls if call[0] == "student_behavior_stats")
@@ -297,8 +297,8 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
                 mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=15.0, frame_index=0), image=fake_frame),
                 mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=45.0, frame_index=1), image=fake_frame),
             ]
-            with mock.patch("vision_orchestrator.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
-                    mock.patch("vision_orchestrator.application.worker.extract_frames", return_value=frames):
+            with mock.patch("app.application.worker.prepare_video_source", side_effect=fake_prepare_video_source), \
+                    mock.patch("app.application.worker.extract_frames", return_value=frames):
                 worker.process_task(message)
 
         snapshot_call = next(call for call in repository.calls if call[0] == "snapshots")
@@ -327,8 +327,8 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
             frame = mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=15.0, frame_index=0), image=fake_frame)
             heartbeat = mock.Mock()
 
-            with mock.patch("vision_orchestrator.application.worker.prepare_video_source", side_effect=fake_prepare_video_source) as prepare, \
-                    mock.patch("vision_orchestrator.application.worker.extract_frames", return_value=[frame]) as extract:
+            with mock.patch("app.application.worker.prepare_video_source", side_effect=fake_prepare_video_source) as prepare, \
+                    mock.patch("app.application.worker.extract_frames", return_value=[frame]) as extract:
                 worker.process_task(message, heartbeat=heartbeat)
 
         self.assertEqual(prepare.call_count, 2)
@@ -368,7 +368,7 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
             fake_frame = np.zeros((40, 80, 3), dtype=np.uint8)
             frame = mock.Mock(point=mock.Mock(minute_no=0, timestamp_seconds=15.0, frame_index=0), image=fake_frame)
 
-            with mock.patch("vision_orchestrator.application.worker.extract_frames", return_value=[frame]) as extract:
+            with mock.patch("app.application.worker.extract_frames", return_value=[frame]) as extract:
                 worker.process_task(message)
 
             self.assertTrue(student_source.exists())
@@ -391,7 +391,7 @@ class VisualAnalysisWorkerTest(unittest.TestCase):
             "student_video_path": "https://example.com/s.mp4",
         })
 
-        with mock.patch("vision_orchestrator.application.worker.prepare_video_source", side_effect=RuntimeError("download failed")):
+        with mock.patch("app.application.worker.prepare_video_source", side_effect=RuntimeError("download failed")):
             with self.assertRaises(RuntimeError):
                 worker.process_task(message)
 

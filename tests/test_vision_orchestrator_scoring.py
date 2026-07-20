@@ -1,6 +1,6 @@
 import unittest
 
-from vision_orchestrator.domain.scoring import score_indicator
+from app.domain.scoring import score_indicator
 
 
 class VisionOrchestratorScoringTest(unittest.TestCase):

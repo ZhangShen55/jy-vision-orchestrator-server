@@ -1,11 +1,11 @@
 import time
 import unittest
 
-from vision_orchestrator.infrastructure.worker_control import (
+from app.infrastructure.worker_control import (
     InMemoryWorkerControlStateRepository,
     WorkerDesiredState,
 )
-from vision_orchestrator.infrastructure.worker_registry import (
+from app.infrastructure.worker_registry import (
     InMemoryWorkerRegistry,
     WorkerRuntimeState,
     WorkerStatus,

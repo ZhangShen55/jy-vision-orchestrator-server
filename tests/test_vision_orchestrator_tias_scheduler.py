@@ -1,8 +1,8 @@
 import time
 import unittest
 
-from vision_orchestrator.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
-from vision_orchestrator.infrastructure.tias.scheduler import NoAvailableTiasInstance, TiasScheduler
+from app.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
+from app.infrastructure.tias.scheduler import NoAvailableTiasInstance, TiasScheduler
 
 
 def _instance(

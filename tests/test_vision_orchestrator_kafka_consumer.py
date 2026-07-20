@@ -1,9 +1,9 @@
 import unittest
 from unittest import mock
 
-from vision_orchestrator.config import VisionOrchestratorConfig
-from vision_orchestrator.infrastructure.kafka.consumer import VisionOrchestratorKafkaConsumer
-from vision_orchestrator.infrastructure.kafka.consumer import create_kafka_consumer
+from app.config import VisionOrchestratorConfig
+from app.infrastructure.kafka.consumer import VisionOrchestratorKafkaConsumer
+from app.infrastructure.kafka.consumer import create_kafka_consumer
 
 
 class FakeKafkaConsumer:
@@ -69,7 +69,7 @@ class VisionOrchestratorKafkaConsumerTest(unittest.TestCase):
             kafka_max_poll_records=1,
         )
 
-        with mock.patch("vision_orchestrator.infrastructure.kafka.consumer.KafkaConsumer") as kafka_consumer:
+        with mock.patch("app.infrastructure.kafka.consumer.KafkaConsumer") as kafka_consumer:
             create_kafka_consumer(config)
 
         kafka_consumer.assert_called_once_with(

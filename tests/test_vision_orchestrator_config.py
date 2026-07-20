@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vision_orchestrator.config import VisionOrchestratorConfig, DependencyCheckError, load_vision_orchestrator_config
+from app.config import VisionOrchestratorConfig, DependencyCheckError, load_vision_orchestrator_config
 
 
 class VisionOrchestratorConfigTest(unittest.TestCase):
@@ -166,20 +166,20 @@ MaxFramesPerVideo = 1
         self.assertIn("definitely_missing_vision_orchestrator_module", str(ctx.exception))
 
     def test_vision_orchestrator_config_does_not_import_tias_config_loader(self):
-        config_source = Path(__file__).resolve().parents[1] / "vision_orchestrator" / "config.py"
+        config_source = Path(__file__).resolve().parents[1] / "app" / "config.py"
 
         self.assertNotIn("tias.core.config_loader", config_source.read_text(encoding="utf-8"))
 
     def test_vision_orchestrator_dockerfile_keeps_service_boundary(self):
-        dockerfile = Path(__file__).resolve().parents[1] / "vision_orchestrator" / "docker" / "Dockerfile"
+        dockerfile = Path(__file__).resolve().parents[1] / "app" / "docker" / "Dockerfile"
         source = dockerfile.read_text(encoding="utf-8")
 
         self.assertNotIn("COPY ./tias", source)
-        self.assertIn("--keep-source vision_orchestrator/api/app.py", source)
+        self.assertIn("--keep-source app/api/app.py", source)
         self.assertNotIn("frame_analyzer.py", source)
 
     def test_source_tree_does_not_depend_on_tias_python_package(self):
-        package_root = Path(__file__).resolve().parents[1] / "vision_orchestrator"
+        package_root = Path(__file__).resolve().parents[1] / "app"
         local_analyzer = package_root / "infrastructure" / "vision" / "frame_analyzer.py"
 
         self.assertFalse(local_analyzer.exists())
@@ -207,7 +207,7 @@ DBName = "ai_quality"
         self.assertEqual(config.db_name, "ai_quality")
 
     def test_loads_toml_example_file(self):
-        config_path = Path(__file__).resolve().parents[1] / "vision_orchestrator" / "config.toml.example"
+        config_path = Path(__file__).resolve().parents[1] / "app" / "config.toml.example"
 
         config = load_vision_orchestrator_config(str(config_path))
 

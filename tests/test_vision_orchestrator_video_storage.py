@@ -5,8 +5,8 @@ from unittest import mock
 
 import numpy as np
 
-from vision_orchestrator.infrastructure.media.snapshot_storage import SnapshotStorage
-from vision_orchestrator.infrastructure.media.video import (
+from app.infrastructure.media.snapshot_storage import SnapshotStorage
+from app.infrastructure.media.video import (
     VideoProcessingError,
     build_frame_points,
     prepare_video_source,
@@ -98,7 +98,7 @@ class VideoSourceTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             video_path = Path(tmpdir) / "unreadable.mp4"
             video_path.write_bytes(b"video")
-            with mock.patch("vision_orchestrator.infrastructure.media.video.os.access", return_value=False):
+            with mock.patch("app.infrastructure.media.video.os.access", return_value=False):
                 with self.assertRaises(VideoProcessingError) as ctx:
                     validate_video_source(str(video_path))
 
@@ -113,7 +113,7 @@ class VideoSourceTest(unittest.TestCase):
     def test_prepare_url_video_source_downloads_to_destination(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "video.mp4"
-            with mock.patch("vision_orchestrator.infrastructure.media.video.download_video", return_value=destination) as download:
+            with mock.patch("app.infrastructure.media.video.download_video", return_value=destination) as download:
                 prepared = prepare_video_source("http://example.com/video.mp4", destination)
 
         self.assertEqual(prepared.source_type, "url")

@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from vision_orchestrator.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
+from app.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
 
 
 class TiasRegistryTest(unittest.TestCase):

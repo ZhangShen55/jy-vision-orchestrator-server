@@ -4,11 +4,11 @@ from unittest import mock
 
 import numpy as np
 
-from vision_orchestrator.config import VisionOrchestratorConfig
-from vision_orchestrator.infrastructure.media.video import ExtractedFrame, FramePoint
-from vision_orchestrator.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
-from vision_orchestrator.infrastructure.tias.scheduler import TiasScheduler
-from vision_orchestrator.infrastructure.vision.remote_frame_analyzer import RemoteFrameAnalyzer
+from app.config import VisionOrchestratorConfig
+from app.infrastructure.media.video import ExtractedFrame, FramePoint
+from app.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
+from app.infrastructure.tias.scheduler import TiasScheduler
+from app.infrastructure.vision.remote_frame_analyzer import RemoteFrameAnalyzer
 
 
 class RemoteFrameAnalyzerTest(unittest.TestCase):
@@ -64,7 +64,7 @@ class RemoteFrameAnalyzerTest(unittest.TestCase):
             },
         ]
 
-        with mock.patch("vision_orchestrator.infrastructure.tias.client.requests.post") as post:
+        with mock.patch("app.infrastructure.tias.client.requests.post") as post:
             post.side_effect = [_response(payload) for payload in responses]
             metrics = analyzer.analyze_student_frames("task-1", frames)
 
@@ -96,7 +96,7 @@ class RemoteFrameAnalyzerTest(unittest.TestCase):
             ],
         }
 
-        with mock.patch("vision_orchestrator.infrastructure.tias.client.requests.post") as post:
+        with mock.patch("app.infrastructure.tias.client.requests.post") as post:
             post.return_value = _response(response_payload)
             metrics = analyzer.analyze_teacher_frames("task-1", frames)
 

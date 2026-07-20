@@ -1,6 +1,6 @@
 import unittest
 
-from vision_orchestrator.domain.metrics import (
+from app.domain.metrics import (
     StudentFrameMetric,
     TeacherFrameMetric,
     aggregate_visual_metrics,

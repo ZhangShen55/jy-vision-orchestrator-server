@@ -1,7 +1,7 @@
 import logging
 
 from app.api.app import TiasInstanceApi, create_api_app
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.infrastructure.tias.registry import InMemoryTiasRegistry, RedisTiasRegistry, TiasRegistry
 from app.infrastructure.worker_control import (
     InMemoryWorkerControlStateRepository,

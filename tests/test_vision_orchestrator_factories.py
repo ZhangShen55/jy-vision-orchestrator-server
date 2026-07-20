@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from app.application.factories import build_frame_analyzer
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.infrastructure.vision.remote_frame_analyzer import RemoteFrameAnalyzer
 
 

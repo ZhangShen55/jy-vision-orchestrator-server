@@ -5,7 +5,7 @@ from typing import Dict, Iterable, List
 
 import cv2
 
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.domain.metrics import StudentFrameMetric, TeacherFrameMetric
 from app.infrastructure.media.video import ExtractedFrame
 from app.infrastructure.tias.client import TiasHttpClient, TiasHttpError

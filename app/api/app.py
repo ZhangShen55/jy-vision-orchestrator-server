@@ -3,7 +3,7 @@ from typing import Any, Mapping
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.infrastructure.tias.registry import TiasInstanceStatus, TiasRegistry
 from app.infrastructure.worker_control import (
     WorkerControlStateRepository,

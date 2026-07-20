@@ -6,7 +6,7 @@ from unittest import mock
 import numpy as np
 
 from app.application.worker import VisualAnalysisWorker
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.domain.metrics import IndicatorMetric, StudentFrameMetric, TeacherFrameMetric
 from app.infrastructure.db.repositories import IndicatorDefinition
 from app.infrastructure.kafka.message import VisualTaskMessage

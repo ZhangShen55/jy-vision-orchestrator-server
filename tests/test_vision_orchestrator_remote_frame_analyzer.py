@@ -4,7 +4,7 @@ from unittest import mock
 
 import numpy as np
 
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.infrastructure.media.video import ExtractedFrame, FramePoint
 from app.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
 from app.infrastructure.tias.scheduler import TiasScheduler

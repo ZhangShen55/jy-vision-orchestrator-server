@@ -7,7 +7,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_repository_uses_app_package_layout():
+    assert (ROOT / "app" / "__init__.py").is_file()
     assert (ROOT / "app" / "main.py").is_file()
+    assert (ROOT / "app" / "core" / "__init__.py").is_file()
+    assert (ROOT / "app" / "core" / "config.py").is_file()
+    assert (ROOT / "app" / "core" / "config_loader.py").is_file()
+    assert (ROOT / "app" / "core" / "bootstrap.py").is_file()
+    assert not (ROOT / "app" / "config.py").exists()
+    assert not (ROOT / "app" / "config_loader.py").exists()
+    assert not (ROOT / "app" / "http_app.py").exists()
     assert not (ROOT / "vision_orchestrator").exists()
 
 

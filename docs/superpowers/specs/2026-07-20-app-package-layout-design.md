@@ -10,8 +10,11 @@
 jy-vision-orchestrator-server/
 ├── app/
 │   ├── main.py
-│   ├── config.py
 │   ├── config.toml.example
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── config_loader.py
+│   │   └── bootstrap.py
 │   ├── api/
 │   ├── application/
 │   ├── domain/

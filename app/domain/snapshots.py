@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable, List, Sequence
 
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.domain.metrics import StudentFrameMetric, TeacherFrameMetric
 
 

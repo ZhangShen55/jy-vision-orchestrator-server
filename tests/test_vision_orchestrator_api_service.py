@@ -4,7 +4,7 @@ import unittest
 from fastapi.testclient import TestClient
 
 from app.api.app import create_api_app
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.infrastructure.tias.registry import InMemoryTiasRegistry, TiasInstanceStatus
 from app.infrastructure.worker_control import (
     InMemoryWorkerControlStateRepository,

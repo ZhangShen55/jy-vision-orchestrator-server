@@ -7,8 +7,8 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from app.config import load_vision_orchestrator_config
-from app.http_app import create_app_from_config
+from app.core.config import load_vision_orchestrator_config
+from app.core.bootstrap import create_app_from_config
 from app.infrastructure.kafka.controlled_consumer import ControlledVisionOrchestratorKafkaConsumer
 from app.infrastructure.kafka.consumer import VisionOrchestratorKafkaConsumer, create_kafka_consumer
 from app.infrastructure.kafka.message import VisualTaskMessage

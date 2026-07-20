@@ -45,8 +45,8 @@ RUN set -e; \
           --keep-source app/__init__.py \
           --keep-source app/main.py \
           --keep-source app/api/app.py \
-          --keep-source app/config_loader.py \
-          --exclude-glob 'app/http_app.py' \
+          --keep-source app/core/config_loader.py \
+          --exclude-glob 'app/core/bootstrap.py' \
           --remove-sources; \
         rm -rf build; \
         find /app -type d -name '__pycache__' -prune -exec rm -rf {} +; \

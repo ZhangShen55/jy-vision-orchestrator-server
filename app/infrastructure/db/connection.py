@@ -1,4 +1,4 @@
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 
 
 def create_mysql_connection(config: VisionOrchestratorConfig):

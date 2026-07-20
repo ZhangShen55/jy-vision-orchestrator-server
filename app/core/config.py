@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Mapping
 
-from app.config_loader import load_config
+from app.core.config_loader import load_config
 
 
 class DependencyCheckError(RuntimeError):

@@ -2,7 +2,7 @@ import json
 import logging
 from typing import Callable, Optional
 
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.infrastructure.kafka.message import InvalidTaskMessage, VisualTaskMessage
 
 try:

@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.infrastructure.kafka.consumer import VisionOrchestratorKafkaConsumer
 from app.infrastructure.kafka.consumer import create_kafka_consumer
 

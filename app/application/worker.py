@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from app.application.constants import INDICATOR_CODES
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.domain.behavior_stats import build_student_behavior_stats
 from app.domain.metrics import StudentFrameMetric, TeacherFrameMetric, aggregate_visual_metrics
 from app.domain.scoring import score_indicator

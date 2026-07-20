@@ -1,5 +1,5 @@
 from app.application.worker import VisualAnalysisWorker
-from app.config import load_vision_orchestrator_config
+from app.core.config import load_vision_orchestrator_config
 from app.infrastructure.db.connection import create_mysql_connection
 from app.infrastructure.db.repositories import VisionOrchestratorRepository
 from app.infrastructure.media.snapshot_storage import SnapshotStorage

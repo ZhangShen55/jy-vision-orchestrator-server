@@ -1,6 +1,6 @@
 import unittest
 
-from app.config import VisionOrchestratorConfig
+from app.core.config import VisionOrchestratorConfig
 from app.domain.metrics import StudentFrameMetric, TeacherFrameMetric
 from app.domain.snapshots import (
     StudentFrameSnapshotInput,

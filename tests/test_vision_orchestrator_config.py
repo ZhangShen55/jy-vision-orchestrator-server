@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app.config import VisionOrchestratorConfig, DependencyCheckError, load_vision_orchestrator_config
+from app.core.config import VisionOrchestratorConfig, DependencyCheckError, load_vision_orchestrator_config
 
 
 class VisionOrchestratorConfigTest(unittest.TestCase):
@@ -166,7 +166,7 @@ MaxFramesPerVideo = 1
         self.assertIn("definitely_missing_vision_orchestrator_module", str(ctx.exception))
 
     def test_vision_orchestrator_config_does_not_import_tias_config_loader(self):
-        config_source = Path(__file__).resolve().parents[1] / "app" / "config.py"
+        config_source = Path(__file__).resolve().parents[1] / "app" / "core" / "config.py"
 
         self.assertNotIn("tias.core.config_loader", config_source.read_text(encoding="utf-8"))
 

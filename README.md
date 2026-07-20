@@ -15,6 +15,7 @@
 
 ```text
 app/                      服务源码、配置示例和运行文档
+  core/                    应用配置与依赖组装
   api/                     FastAPI 控制面
   application/             任务编排流程
   domain/                  指标、评分和快照策略

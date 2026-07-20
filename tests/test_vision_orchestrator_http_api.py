@@ -1,6 +1,6 @@
 import unittest
 
-from app.http_app import TiasInstanceApi, create_app
+from app.core.bootstrap import TiasInstanceApi, create_app
 from app.infrastructure.tias.registry import InMemoryTiasRegistry
 
 

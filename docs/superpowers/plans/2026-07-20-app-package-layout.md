@@ -129,7 +129,7 @@ Run: `test ! -d vision_orchestrator && ! rg -n 'from vision_orchestrator|import 
 
 - [x] **Step 2: Check the entrypoint and config**
 
-Run: `python -m app.main --help && python -c 'from app.config import load_vision_orchestrator_config; load_vision_orchestrator_config("app/config.toml.example")'`
+Run: `python -m app.main --help && python -c 'from app.core.config import load_vision_orchestrator_config; load_vision_orchestrator_config("app/config.toml.example")'`
 
 - [x] **Step 3: Validate Docker Compose**
 
@@ -140,3 +140,53 @@ Run: `docker compose -f app/docker/docker-compose.yml config`
 Run: `python -m pytest -q`
 
 Expected: all tests pass when the declared dependencies are installed; otherwise report dependency-related collection failures separately from assertion failures.
+
+### Task 6: Move shared bootstrap modules into core
+
+**Files:**
+- Create: `app/core/__init__.py`
+- Move: `app/config.py` to `app/core/config.py`
+- Move: `app/config_loader.py` to `app/core/config_loader.py`
+- Move: `app/http_app.py` to `app/core/bootstrap.py`
+- Modify: `app/main.py`
+- Modify: `app/**/*.py`
+- Modify: `tests/**/*.py`
+- Modify: `app/docker/Dockerfile`
+- Modify: `README.md`
+- Modify: `docs/superpowers/specs/2026-07-20-app-package-layout-design.md`
+- Test: `tests/test_app_package_layout.py`
+
+- [x] **Step 1: Extend the layout contract**
+
+```python
+def test_repository_uses_app_package_layout():
+    assert (ROOT / "app" / "__init__.py").is_file()
+    assert (ROOT / "app" / "main.py").is_file()
+    assert (ROOT / "app" / "core" / "__init__.py").is_file()
+    assert (ROOT / "app" / "core" / "config.py").is_file()
+    assert (ROOT / "app" / "core" / "config_loader.py").is_file()
+    assert (ROOT / "app" / "core" / "bootstrap.py").is_file()
+    assert not (ROOT / "app" / "config.py").exists()
+    assert not (ROOT / "app" / "config_loader.py").exists()
+    assert not (ROOT / "app" / "http_app.py").exists()
+```
+
+- [x] **Step 2: Run the test and verify RED**
+
+Run: `python -m pytest -q tests/test_app_package_layout.py`
+
+Expected: failure because the three modules still live directly under `app/`.
+
+- [x] **Step 3: Move modules and update imports**
+
+Use `app.core.config`, `app.core.config_loader`, and `app.core.bootstrap` throughout application code, tests, and mock targets.
+
+- [x] **Step 4: Update build and design paths**
+
+Keep `app/core/config_loader.py` as Cython bootstrap source, exclude `app/core/bootstrap.py`, and document `core/` as the location for shared configuration and dependency assembly.
+
+- [x] **Step 5: Run the layout and full test suites**
+
+Run: `python -m pytest -q tests/test_app_package_layout.py && python -m pytest -q`
+
+Expected: all tests pass.

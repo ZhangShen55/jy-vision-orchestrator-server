@@ -102,9 +102,22 @@ docker run -d \
 
 控制接口示例：
 
+
+查看服务是否健康拉起:
+```bash
+curl http://127.0.0.1:9000/api/health
+```
+
+
+查看实例注册情况:
+```bash
+curl http://127.0.0.1:9000/api/tias/instances
+```
+
+启动开始消费：
 ```bash
 curl -X POST http://127.0.0.1:9000/api/worker-control/resume \
   -H 'X-VISION-ORCHESTRATOR-KEY: change-me' \
   -H 'Content-Type: application/json' \
-  -d '{"updated_by":"operator","reason":"manual resume"}'
+  -d '{"updated_by":"operator","reason":"启动开始消费！"}'
 ```

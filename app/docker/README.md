@@ -62,6 +62,15 @@ docker build -f app/docker/Dockerfile \
   -t vision-orchestrator:6.0-protected .
 ```
 
+在 ARM 主机上构建可运行于 x86_64 服务器的镜像：
+
+```bash
+docker build --platform linux/amd64 \
+  -f app/docker/Dockerfile \
+  --build-arg PROTECT_SOURCE=1 \
+  -t vision-orchestrator:6.0-protected-amd64 .
+```
+
 API 启动命令：
 
 ```bash

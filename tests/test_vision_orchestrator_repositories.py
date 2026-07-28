@@ -185,6 +185,29 @@ class VisionOrchestratorRepositoryTest(unittest.TestCase):
         self.assertEqual(params[0]["peak_period_desc"], "3′–5′")
         self.assertEqual(params[0]["confidence_level"], 2)
 
+    def test_insert_snapshot_events_writes_selection_mode_one(self):
+        conn = FakeConnection()
+        repo = VisionOrchestratorRepository(conn)
+
+        repo.insert_snapshot_events(
+            "task-1",
+            [
+                {
+                    "target_type": 1,
+                    "record_type": 2,
+                    "behavior_type": 3,
+                    "capture_second": 12,
+                    "confidence_score": 0.9,
+                    "image_url": "https://example.test/snapshot.jpg",
+                }
+            ],
+        )
+
+        sql, params = conn.cursor_obj.executemany_calls[0]
+        self.assertIn("selection_mode", sql)
+        self.assertIn("selection_mode = VALUES(selection_mode)", sql)
+        self.assertEqual(params[0]["selection_mode"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

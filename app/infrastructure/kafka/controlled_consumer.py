@@ -3,8 +3,11 @@ import inspect
 from datetime import datetime, timezone
 from typing import Callable, Optional
 
+from kafka import TopicPartition
+from kafka.structs import OffsetAndMetadata
+
 from app.infrastructure.kafka.consumer import VisionOrchestratorKafkaConsumer, _message_attr
-from app.infrastructure.kafka.message import VisualTaskMessage
+from app.infrastructure.kafka.message import InvalidTaskMessage, VisualTaskMessage
 from app.infrastructure.worker_control import (
     WorkerControlState,
     WorkerControlStateRepository,
@@ -92,7 +95,22 @@ class ControlledVisionOrchestratorKafkaConsumer:
 
     def _consume_one(self, handler: Callable[[VisualTaskMessage], None]) -> bool:
         for raw_message in self._iter_messages_once():
-            task_message = VisionOrchestratorKafkaConsumer._parse_message(raw_message)
+            try:
+                task_message = VisionOrchestratorKafkaConsumer._parse_message(raw_message)
+            except InvalidTaskMessage as exc:
+                self.failed_count += 1
+                self.last_error = str(exc)
+                logger.error(
+                    "Kafka 消息不可处理，跳过并提交 offset worker_id=%s topic=%s partition=%s offset=%s reason=%s value=%r",
+                    self.worker_id,
+                    _message_attr(raw_message, "topic"),
+                    _message_attr(raw_message, "partition"),
+                    _message_attr(raw_message, "offset"),
+                    exc,
+                    VisionOrchestratorKafkaConsumer._raw_value(raw_message),
+                )
+                self._commit_message_offset(raw_message)
+                return True
             self._heartbeat(
                 WorkerRuntimeState.RUNNING,
                 self.control_repository.get_state().desired_state,
@@ -157,6 +175,21 @@ class ControlledVisionOrchestratorKafkaConsumer:
             )
             return True
         return False
+
+    def _commit_message_offset(self, raw_message) -> None:
+        topic_partition = TopicPartition(
+            _message_attr(raw_message, "topic"),
+            _message_attr(raw_message, "partition"),
+        )
+        next_offset = OffsetAndMetadata(_message_attr(raw_message, "offset") + 1, "")
+        self.consumer.commit({topic_partition: next_offset})
+        logger.info(
+            "Kafka offset 已提交 worker_id=%s task_id=- status=invalid topic=%s partition=%s offset=%s",
+            self.worker_id,
+            topic_partition.topic,
+            topic_partition.partition,
+            next_offset.offset,
+        )
 
     def _iter_messages_once(self):
         if hasattr(self.consumer, "poll"):

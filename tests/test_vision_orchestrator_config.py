@@ -48,6 +48,7 @@ DBPort = 23308
 DBUser = "root"
 DBPassword = "test-password"
 DBName = "ai_quality"
+WriteSnapshotSelectionMode = false
 SnapshotMountRoot = "/tmp"
 SnapshotRelativePrefix = "cv"
 SnapshotScale = 0.25
@@ -109,6 +110,7 @@ MaxFramesPerVideo = 1
         self.assertEqual(config.tias_heartbeat_timeout_seconds, 15)
         self.assertEqual(config.tias_fallback_instances, ("http://127.0.0.1:8981",))
         self.assertEqual(config.db_port, 23308)
+        self.assertFalse(config.write_snapshot_selection_mode)
         self.assertEqual(config.snapshot_mount_root, Path("/tmp"))
         self.assertEqual(config.snapshot_relative_prefix, "cv")
         self.assertEqual(config.snapshot_max_total, 30)
@@ -147,6 +149,7 @@ MaxFramesPerVideo = 1
         self.assertEqual(config.worker_default_desired_state, "PAUSED")
         self.assertEqual(config.worker_heartbeat_timeout_seconds, 30)
         self.assertEqual(config.db_name, "ai_quality")
+        self.assertTrue(config.write_snapshot_selection_mode)
         self.assertEqual(config.frame_interval_seconds, 30)
         self.assertIsNone(config.local_video_base_root)
         self.assertEqual(config.max_task_retries, 3)

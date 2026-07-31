@@ -1,6 +1,8 @@
 import unittest
 from unittest import mock
 
+from kafka import TopicPartition
+
 from app.infrastructure.kafka.controlled_consumer import ControlledVisionOrchestratorKafkaConsumer
 from app.infrastructure.worker_control import (
     InMemoryWorkerControlStateRepository,
@@ -37,6 +39,7 @@ class PollableFakeKafkaConsumer:
         self.batches = list(batches)
         self.poll_calls = 0
         self.commits = 0
+        self.commit_calls = []
 
     def poll(self, timeout_ms=0, max_records=1):
         self.poll_calls += 1
@@ -44,8 +47,9 @@ class PollableFakeKafkaConsumer:
             return {}
         return self.batches.pop(0)
 
-    def commit(self):
+    def commit(self, offsets=None):
         self.commits += 1
+        self.commit_calls.append(offsets)
 
 
 class ControlledVisionOrchestratorKafkaConsumerTest(unittest.TestCase):
@@ -172,6 +176,71 @@ class ControlledVisionOrchestratorKafkaConsumerTest(unittest.TestCase):
         self.assertEqual(kafka.poll_calls, 1)
         self.assertEqual(kafka.commits, 0)
         self.assertEqual(worker_registry.get_worker("worker-a").actual_state, WorkerRuntimeState.RUNNING)
+
+    def test_null_message_value_commits_exact_offset_and_continues(self):
+        partition = TopicPartition("classroom_cv_task", 0)
+        kafka = PollableFakeKafkaConsumer([
+            {partition: [FakeMessage(None)]},
+            {partition: [FakeMessage({
+                "task_id": "task-2",
+                "teacher_video_path": "https://e/t.mp4",
+                "student_video_path": "https://e/s.mp4",
+            })]},
+        ])
+        control_repository = InMemoryWorkerControlStateRepository(default_state=WorkerDesiredState.RUNNING)
+        worker_registry = InMemoryWorkerRegistry()
+        handled = []
+        consumer = ControlledVisionOrchestratorKafkaConsumer(
+            consumer=kafka,
+            worker_id="worker-a",
+            control_repository=control_repository,
+            worker_registry=worker_registry,
+            topic="classroom_cv_task",
+            consumer_group="cv-analysis-service",
+        )
+
+        first_result = consumer.run_once(lambda message: handled.append(message.task_id))
+
+        self.assertEqual(first_result, WorkerRuntimeState.RUNNING)
+        self.assertEqual(handled, [])
+        self.assertEqual(kafka.commits, 1)
+        self.assertEqual(kafka.commit_calls[0][partition].offset, 13)
+        worker_status = worker_registry.get_worker("worker-a")
+        self.assertEqual(worker_status.failed_count, 1)
+        self.assertIn("JSON object", worker_status.last_error)
+
+        second_result = consumer.run_once(lambda message: handled.append(message.task_id))
+
+        self.assertEqual(second_result, WorkerRuntimeState.RUNNING)
+        self.assertEqual(handled, ["task-2"])
+        self.assertEqual(kafka.commits, 2)
+        self.assertEqual(worker_registry.get_worker("worker-a").processed_count, 1)
+
+    def test_missing_required_video_field_commits_exact_offset_without_handler(self):
+        partition = TopicPartition("classroom_cv_task", 0)
+        kafka = PollableFakeKafkaConsumer([
+            {partition: [FakeMessage({
+                "task_id": "task-invalid",
+                "student_video_path": "https://e/s.mp4",
+            })]},
+        ])
+        control_repository = InMemoryWorkerControlStateRepository(default_state=WorkerDesiredState.RUNNING)
+        worker_registry = InMemoryWorkerRegistry()
+        consumer = ControlledVisionOrchestratorKafkaConsumer(
+            consumer=kafka,
+            worker_id="worker-a",
+            control_repository=control_repository,
+            worker_registry=worker_registry,
+            topic="classroom_cv_task",
+            consumer_group="cv-analysis-service",
+        )
+
+        result = consumer.run_once(lambda message: self.fail("handler should not run"))
+
+        self.assertEqual(result, WorkerRuntimeState.RUNNING)
+        self.assertEqual(kafka.commits, 1)
+        self.assertEqual(kafka.commit_calls[0][partition].offset, 13)
+        self.assertIn("teacher_video", worker_registry.get_worker("worker-a").last_error)
 
     def test_stopped_state_can_keep_process_alive_without_polling(self):
         kafka = PollableFakeKafkaConsumer([{}])

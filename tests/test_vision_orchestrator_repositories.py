@@ -208,6 +208,28 @@ class VisionOrchestratorRepositoryTest(unittest.TestCase):
         self.assertIn("selection_mode = VALUES(selection_mode)", sql)
         self.assertEqual(params[0]["selection_mode"], 1)
 
+    def test_insert_snapshot_events_omits_selection_mode_for_legacy_schema(self):
+        conn = FakeConnection()
+        repo = VisionOrchestratorRepository(conn, write_snapshot_selection_mode=False)
+
+        repo.insert_snapshot_events(
+            "task-legacy",
+            [
+                {
+                    "target_type": 1,
+                    "record_type": 2,
+                    "behavior_type": 3,
+                    "capture_second": 12,
+                    "confidence_score": 0.9,
+                    "image_url": "https://example.test/snapshot.jpg",
+                }
+            ],
+        )
+
+        sql, params = conn.cursor_obj.executemany_calls[0]
+        self.assertNotIn("selection_mode", sql)
+        self.assertNotIn("selection_mode", params[0])
+
 
 if __name__ == "__main__":
     unittest.main()

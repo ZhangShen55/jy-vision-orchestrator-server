@@ -57,6 +57,10 @@ DBUser = "root"
 DBPassword = ""
 DBName = "ai_quality"
 
+# 是否向 lesson_snapshot_event.selection_mode 写入固定值 1。
+# true：数据库已包含该字段；false：兼容没有该字段的旧版数据库表。
+WriteSnapshotSelectionMode = true
+
 # 抓拍存储配置。image_url 入库保存相对路径。Docker 内请配置为 /mnt。
 SnapshotMountRoot = "/mnt"
 SnapshotRelativePrefix = "cv"

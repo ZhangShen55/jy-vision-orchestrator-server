@@ -23,8 +23,9 @@ class IndicatorDefinition:
 
 
 class VisionOrchestratorRepository:
-    def __init__(self, connection):
+    def __init__(self, connection, write_snapshot_selection_mode: bool = True):
         self.connection = connection
+        self.write_snapshot_selection_mode = bool(write_snapshot_selection_mode)
 
     @contextmanager
     def _cursor(self):
@@ -144,7 +145,7 @@ class VisionOrchestratorRepository:
         params = []
         for row in rows:
             image_url = row.get("image_url")
-            params.append({
+            param = {
                 "snapshot_event_id": row.get("snapshot_event_id") or stable_id("snapshot", task_id, row["capture_second"], image_url),
                 "task_id": task_id,
                 "target_type": row["target_type"],
@@ -152,22 +153,36 @@ class VisionOrchestratorRepository:
                 "behavior_type": row.get("behavior_type"),
                 "capture_second": row["capture_second"],
                 "confidence_score": row.get("confidence_score", 1.0),
-                "selection_mode": 1,
                 "image_url": image_url,
-            })
+            }
+            if self.write_snapshot_selection_mode:
+                param["selection_mode"] = 1
+            params.append(param)
         if not params:
             return
-        sql = """
-            INSERT INTO lesson_snapshot_event
-                (snapshot_event_id, task_id, target_type, record_type, behavior_type, capture_second, confidence_score, selection_mode, image_url, create_by, update_by)
-            VALUES
-                (%(snapshot_event_id)s, %(task_id)s, %(target_type)s, %(record_type)s, %(behavior_type)s, %(capture_second)s, %(confidence_score)s, %(selection_mode)s, %(image_url)s, 'cv-worker', 'cv-worker')
-            ON DUPLICATE KEY UPDATE
-                confidence_score = VALUES(confidence_score),
-                selection_mode = VALUES(selection_mode),
-                image_url = VALUES(image_url),
-                update_by = 'cv-worker'
-        """
+        if self.write_snapshot_selection_mode:
+            sql = """
+                INSERT INTO lesson_snapshot_event
+                    (snapshot_event_id, task_id, target_type, record_type, behavior_type, capture_second, confidence_score, selection_mode, image_url, create_by, update_by)
+                VALUES
+                    (%(snapshot_event_id)s, %(task_id)s, %(target_type)s, %(record_type)s, %(behavior_type)s, %(capture_second)s, %(confidence_score)s, %(selection_mode)s, %(image_url)s, 'cv-worker', 'cv-worker')
+                ON DUPLICATE KEY UPDATE
+                    confidence_score = VALUES(confidence_score),
+                    selection_mode = VALUES(selection_mode),
+                    image_url = VALUES(image_url),
+                    update_by = 'cv-worker'
+            """
+        else:
+            sql = """
+                INSERT INTO lesson_snapshot_event
+                    (snapshot_event_id, task_id, target_type, record_type, behavior_type, capture_second, confidence_score, image_url, create_by, update_by)
+                VALUES
+                    (%(snapshot_event_id)s, %(task_id)s, %(target_type)s, %(record_type)s, %(behavior_type)s, %(capture_second)s, %(confidence_score)s, %(image_url)s, 'cv-worker', 'cv-worker')
+                ON DUPLICATE KEY UPDATE
+                    confidence_score = VALUES(confidence_score),
+                    image_url = VALUES(image_url),
+                    update_by = 'cv-worker'
+            """
         with self._transaction_cursor() as cursor:
             cursor.executemany(sql, params)
 

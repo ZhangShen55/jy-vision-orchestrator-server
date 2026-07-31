@@ -49,6 +49,7 @@ cp app/config.toml.example app/config.toml
 | `TiasInferenceMode` | `remote` 表示通过 HTTP 调用 TIAS |
 | `TiasBatchSize` | 每次发给 TIAS 的帧批大小 |
 | `DBHost` / `DBPort` / `DBUser` / `DBPassword` / `DBName` | 业务库连接 |
+| `WriteSnapshotSelectionMode` | `true` 时向 `lesson_snapshot_event.selection_mode` 写入 `1`；旧表没有该字段时必须设为 `false` |
 | `SnapshotMountRoot` | 快照写入根目录 |
 | `SnapshotRelativePrefix` | 快照入库相对路径前缀，默认 `cv` |
 | `SnapshotScale` | 快照缩放比例，默认 `0.25` |

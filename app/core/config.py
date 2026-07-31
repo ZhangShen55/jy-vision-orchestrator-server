@@ -53,6 +53,7 @@ class VisionOrchestratorConfig:
     db_user: str = "root"
     db_password: str = ""
     db_name: str = "ai_quality"
+    write_snapshot_selection_mode: bool = True
     snapshot_mount_root: Path = Path("/mnt")
     snapshot_relative_prefix: str = "cv"
     snapshot_scale: float = 0.25
@@ -217,6 +218,11 @@ def load_vision_orchestrator_config(config_path: str) -> VisionOrchestratorConfi
         db_user=str(_get_value(section, "DBUser", VisionOrchestratorConfig.db_user)),
         db_password=str(_get_value(section, "DBPassword", VisionOrchestratorConfig.db_password)),
         db_name=str(_get_value(section, "DBName", VisionOrchestratorConfig.db_name)),
+        write_snapshot_selection_mode=_to_bool(_get_value(
+            section,
+            "WriteSnapshotSelectionMode",
+            VisionOrchestratorConfig.write_snapshot_selection_mode,
+        )),
         snapshot_mount_root=Path(str(_get_value(section, "SnapshotMountRoot", VisionOrchestratorConfig.snapshot_mount_root))),
         snapshot_relative_prefix=str(_get_value(section, "SnapshotRelativePrefix", VisionOrchestratorConfig.snapshot_relative_prefix)),
         snapshot_scale=float(_get_value(section, "SnapshotScale", VisionOrchestratorConfig.snapshot_scale)),

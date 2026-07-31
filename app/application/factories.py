@@ -14,7 +14,10 @@ def build_worker(config_path: str) -> VisualAnalysisWorker:
     storage = SnapshotStorage(config.snapshot_mount_root, config.snapshot_relative_prefix, config.snapshot_scale)
     storage.ensure_writable()
     connection = create_mysql_connection(config)
-    repository = VisionOrchestratorRepository(connection)
+    repository = VisionOrchestratorRepository(
+        connection,
+        write_snapshot_selection_mode=config.write_snapshot_selection_mode,
+    )
     return VisualAnalysisWorker(
         config=config,
         repository=repository,
